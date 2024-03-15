@@ -5,14 +5,15 @@ import numpy as np
 import requests
 
 # Video feed
-cap = cv2.VideoCapture('D:/Parking Solns/controllers/parking-python/cbb.mp4')
+cap = cv2.VideoCapture('D:/Parking Solns/controllers/parking-python/chemvid.mp4')
 
-with open(r'D:\Parking Solns\controllers\parking-python\cbposn', 'rb') as f:
+
+with open(r'D:\Parking Solns\controllers\parking-python\chemposn', 'rb') as f:
     posList = pickle.load(f)
 
 prev_parking_status = [False] * len(posList)
 
-width, height = 250, 500
+width, height = 150,197
 
 
 def checkParkingSpace(imgPro):
@@ -29,7 +30,7 @@ def checkParkingSpace(imgPro):
         count = cv2.countNonZero(imgCrop)
 
 
-        if count < 1500:
+        if count < 2000:
             color = (0, 255, 0)
             thickness = 5
             spaceCounter += 1
@@ -38,7 +39,7 @@ def checkParkingSpace(imgPro):
             color = (0, 0, 255)
             thickness = 2
             occupied = True # parking space is occupied
-        # cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
+        cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
         # cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
         #     thickness=2, offset=0, colorR=color)
 
@@ -58,7 +59,7 @@ def checkParkingSpace(imgPro):
             data = {
                 "freeSlots" : spaceCounter
             }
-            response = requests.patch('http://127.0.0.1:3000/api/v1/parkings/5c88fa8cf4afda39709c2974', headers=headers,json=data)
+            response = requests.patch('http://127.0.0.1:3000/api/v1/parkings/5c88fa8cf4afda39709c2970', headers=headers,json=data)
             print(spaceCounter)
             response.raise_for_status()  # Raise an exception if the request was unsuccessful
         except requests.exceptions.RequestException as e:
